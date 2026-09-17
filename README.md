@@ -32,3 +32,32 @@
 
 ```text
 python scanner.py
+```
+
+## 目录结构
+```text
+file_organizer/
+├── scanner.py
+├── README.md
+└── .gitignore
+```
+
+## 主要函数
+### get_category(file_path)
+
+- 输入：一个 Path 文件对象
+- 作用：根据文件扩展名判断分类
+- 输出：分类名称字符串，例如“PDF”或“图片”
+
+### organize_file(file_path, base_folder)
+
+- 输入：待整理的文件（Path 对象）、待整理目录（Path 对象）
+- 作用：根据分类创建目标目录，检查同名文件，并移动一个文件
+- 处理的特殊情况：目标文件已存在时跳过；没有权限或文件不存在时显示提示
+
+## 当前限制
+- 只扫描当前目录，不扫描子目录
+- 未识别的文件扩展名统一归入“其他”；
+- 目标位置存在同名文件时会跳过，不会自动重命名，也不会覆盖原文件；
+- 目前只处理 `PermissionError` 和 `FileNotFoundError`，其他文件操作异常尚未统一处理；
+- 当前使用手动测试验证功能，尚未编写自动化测试。
