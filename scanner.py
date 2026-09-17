@@ -2,7 +2,7 @@ from pathlib import Path
 
 # 根据文件后缀进行分类，接受一个 Path 对象作为参数
 def get_category(file_path):
-    suffix = file_path.suffix
+    suffix = file_path.suffix.lower()
     
     if suffix == ".pdf":
         return "PDF"
@@ -13,7 +13,7 @@ def get_category(file_path):
     else:
         return "其他"
     
-# 整理文件
+# 整理文件，接受一个 Path 对象和一个基准文件夹作为参数
 def organize_file(file_path, base_folder):
     print(f"文件名：{file_path.name}")
     print(f"后缀：{file_path.suffix}")
@@ -25,6 +25,7 @@ def organize_file(file_path, base_folder):
     
     ## 创建分类文件夹
     category_folder = base_folder / "整理结果" / category
+    ### 创建目录，如果目录已存在则不会报错
     category_folder.mkdir(parents=True, exist_ok=True)
     
     ## 文件移动到分类文件夹
@@ -46,13 +47,27 @@ def organize_file(file_path, base_folder):
     print(f"分类目录：{category_folder}")
     print()
 
-# 扫描当前文件夹中的所有文件，并进行整理
-folder = Path(__file__).parent
+# 主程序入口
+folder_txt = input("请输入待整理目录路径：").strip()
+if not folder_txt:
+    print("路径不能为空")
+else:
+    folder = Path(folder_txt)
 
-for item in folder.iterdir():
-    ## 绕过当前脚本文件，避免移动自身
-    if item.is_file():
-        if item.name == "scanner.py":
-            continue
+    # 扫描当前文件夹中的所有文件，并进行整理
+    ## 检查目录是否存在
+    if not folder.exists():
+        print(f"目录不存在：{folder}")
+    elif not folder.is_dir():
+        print(f"这不是目录：{folder}")
+    else:
+        print(f"正在扫描目录：{folder}")
+        ## 遍历目录中的所有文件
+        for item in folder.iterdir():
+            if item.is_file():
+                ## 绕过当前脚本文件，避免移动自身
+                if item.name == "scanner.py":
+                    continue
+                
+                organize_file(item, folder)
         
-        organize_file(item, folder)
